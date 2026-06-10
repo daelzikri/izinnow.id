@@ -1,0 +1,40 @@
+/* 
+   Custom CSS for izinnow.id 
+   Tailwind is used for the majority of styling, 
+   but specific custom animations or Swiper overrides go here.
+*/
+
+/* Swiper Navigation Customization */
+.swiper-button-next-custom,
+.swiper-button-prev-custom {
+    background: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+}
+
+.swiper-button-next-custom:hover,
+.swiper-button-prev-custom:hover {
+    background: #f8fafc;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure the Swiper container has enough padding for the shadow of elements inside */
+.testimonialSwiper {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Custom Utilities */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
