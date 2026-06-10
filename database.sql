@@ -17,8 +17,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `izinnow_db`
 --
-CREATE DATABASE IF NOT EXISTS `izinnow_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `izinnow_db`;
+-- CREATE DATABASE IF NOT EXISTS `izinnow_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+-- USE `izinnow_db`;
 
 -- --------------------------------------------------------
 

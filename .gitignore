@@ -1,0 +1,17 @@
+# Database files
+*.sql
+*.sqlite
+
+# Environment variables
+.env
+
+# Sensitive configuration files
+includes/db.php
+admin/db.php
+
+# MacOS specific
+.DS_Store
+
+# IDE and Editor files
+.vscode/
+.idea/
