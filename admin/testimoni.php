@@ -1,5 +1,6 @@
 <?php
 require_once '../includes/db.php';
+require_once 'includes/upload_helper.php';
 
 // Handle Delete
 if (isset($_GET['delete'])) {
@@ -15,18 +16,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $client_name = $_POST['client_name'];
     $company_name = $_POST['company_name'];
     $quote = $_POST['quote'];
-    $image_url = $_POST['image_url'];
-    $video_url = $_POST['video_url'] ?? '';
-    $is_active = isset($_POST['is_active']) ? 1 : 0;
-
+    $image_url_input = $_POST['image_url'] ?? '';
+    
+    // Process File Upload
+    $uploadedPath = uploadAndConvertToWebp('image_file', '../assets/uploads/testimoni/');
+    
     if (isset($_POST['id']) && !empty($_POST['id'])) {
         // Update
         $id = (int)$_POST['id'];
+        
+        // If there's a new upload, use it, else if there's a URL input use it, else keep old
+        if ($uploadedPath) {
+            $image_url = $uploadedPath;
+        } elseif (!empty($image_url_input)) {
+            $image_url = $image_url_input;
+        } else {
+            $stmt = $pdo->prepare("SELECT image_url FROM testimonials WHERE id = ?");
+            $stmt->execute([$id]);
+            $oldData = $stmt->fetch();
+            $image_url = $oldData['image_url'] ?? '';
+        }
+
         $stmt = $pdo->prepare("UPDATE testimonials SET client_name=?, company_name=?, quote=?, image_url=?, video_url=?, is_active=? WHERE id=?");
         $stmt->execute([$client_name, $company_name, $quote, $image_url, $video_url, $is_active, $id]);
         header("Location: testimoni.php?msg=updated");
     } else {
         // Insert
+        $image_url = $uploadedPath ? $uploadedPath : $image_url_input;
         $stmt = $pdo->prepare("INSERT INTO testimonials (client_name, company_name, quote, image_url, video_url, is_active) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([$client_name, $company_name, $quote, $image_url, $video_url, $is_active]);
         header("Location: testimoni.php?msg=added");
@@ -72,7 +88,7 @@ if (isset($_GET['edit'])) {
     <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 p-6 self-start sticky top-6">
         <h2 class="text-xl font-bold text-gray-900 mb-6"><?= $editData ? 'Edit Testimoni' : 'Tambah Testimoni Baru' ?></h2>
         
-        <form action="testimoni.php" method="POST" class="space-y-4">
+        <form action="testimoni.php" method="POST" enctype="multipart/form-data" class="space-y-4">
             <?php if ($editData): ?>
                 <input type="hidden" name="id" value="<?= $editData['id'] ?>">
             <?php endif; ?>
@@ -93,9 +109,19 @@ if (isset($_GET['edit'])) {
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">URL Foto (Image URL)</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Upload Foto (Opsional)</label>
+                <input type="file" name="image_file" accept=".jpg,.jpeg,.png,.webp" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-accent focus:border-accent">
+                <p class="text-xs text-gray-500 mt-1">Pilih gambar dari perangkat. Otomatis dikonversi ke WebP.</p>
+                <?php if($editData && $editData['image_url']): ?>
+                    <div class="mt-2 text-sm text-gray-500">
+                        Gambar saat ini: <img src="../<?= htmlspecialchars($editData['image_url']) ?>" class="h-10 w-auto rounded inline-block">
+                    </div>
+                <?php endif; ?>
+            </div>
+            
+            <div class="mt-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Atau Gunakan URL Foto (Jika tidak upload)</label>
                 <input type="url" name="image_url" placeholder="https://..." value="<?= htmlspecialchars($editData['image_url'] ?? '') ?>" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-accent focus:border-accent">
-                <p class="text-xs text-gray-500 mt-1">Gunakan link gambar (JPG/PNG). Kosongkan untuk menggunakan avatar bawaan.</p>
             </div>
 
             <div class="flex items-center mt-4">

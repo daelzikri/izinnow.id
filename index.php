@@ -214,15 +214,23 @@ $yt_posts = $stmt->fetchAll();
 
             <div class="swiper clientSwiper">
                 <div class="swiper-wrapper items-center">
-                    <div class="swiper-slide text-center flex justify-center"><i class="fa-brands fa-aws text-6xl text-[#232F3E]"></i></div>
-                    <div class="swiper-slide text-center flex justify-center"><i class="fa-brands fa-google text-5xl text-[#4285F4]"></i></div>
-                    <div class="swiper-slide text-center flex justify-center"><i class="fa-brands fa-microsoft text-5xl text-[#00A4EF]"></i></div>
-                    <div class="swiper-slide text-center flex justify-center"><i class="fa-brands fa-apple text-6xl text-black"></i></div>
-                    <div class="swiper-slide text-center flex justify-center"><i class="fa-brands fa-meta text-5xl text-[#0668E1]"></i></div>
-                    <div class="swiper-slide text-center flex justify-center"><i class="fa-brands fa-stripe text-6xl text-[#635BFF]"></i></div>
-                    <div class="swiper-slide text-center flex justify-center"><i class="fa-brands fa-shopify text-5xl text-[#95BF47]"></i></div>
-                    <div class="swiper-slide text-center flex justify-center"><i class="fa-brands fa-slack text-5xl text-[#E01E5A]"></i></div>
-                </div>
+                    <?php
+                    $client_dir = 'assets/client';
+                    if (is_dir($client_dir)) {
+                        // Scan dir and filter for common image types, focusing on webp now.
+                        $files = array_diff(scandir($client_dir), array('.', '..'));
+                        foreach ($files as $file) {
+                            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                            if (in_array($ext, ['webp', 'png', 'jpg', 'jpeg'])) {
+                                echo '<div class="swiper-slide text-center flex justify-center p-4">';
+                                echo '<img src="' . htmlspecialchars($client_dir . '/' . $file) . '" alt="Client" class="max-h-16 w-auto object-contain transition-transform hover:scale-110">';
+                                echo '</div>';
+                            }
+                        }
+                    } else {
+                        echo '<div class="swiper-slide text-center text-gray-500">No client images found.</div>';
+                    }
+                    ?></div>
             </div>
         </div>
     </section>
@@ -303,7 +311,7 @@ $yt_posts = $stmt->fetchAll();
                         </div>
                         <div>
                             <h4 class="font-bold text-primary text-lg">Alamat Kantor</h4>
-                            <p class="text-gray-500 text-sm mt-1 leading-relaxed">BTN Royal Bhayangkara, Blok D-18, Desa Ranjok, Gunungsari, Lombok Barat, NTB</p>
+                            <p class="text-gray-500 text-sm mt-1 leading-relaxed">Jl. Guru Bangkol No.5a, Karang Anyar, Kec. Mataram, Kota Mataram, Nusa Tenggara Bar. 83127</p>
                         </div>
                     </div>
                     
@@ -322,7 +330,7 @@ $yt_posts = $stmt->fetchAll();
             <!-- Right Map Column -->
             <div class="relative w-full h-[450px] rounded-3xl overflow-hidden shadow-xl border border-gray-100 bg-white group">
                 <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126388.94825965457!2d116.0354432!3d-8.5997232!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dcdb8b54b1f4165%3A0xc3f848bb22d2f788!2sLombok%20Barat%2C%20West%20Nusa%20Tenggara!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" 
+                    src="https://maps.google.com/maps?q=Jl.%20Guru%20Bangkol,%20Karang%20Anyar,%20Mataram&t=&z=16&ie=UTF8&iwloc=&output=embed" 
                     width="100%" 
                     height="100%" 
                     style="border:0;" 

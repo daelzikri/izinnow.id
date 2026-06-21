@@ -23,11 +23,11 @@
                         </div>
                         <div>
                             <h4 class="font-bold text-gray-900 text-lg">Alamat Kantor</h4>
-                            <p class="text-gray-600 leading-relaxed mt-1">Nata Alam Mavilla 3 Blok N.06 JL. Raya Mapreo, Kuranji Kec. Labuapi, Lombok Barat, Nusa Tenggara Barat</p>
+                            <p class="text-gray-600 leading-relaxed mt-1">Jl. Guru Bangkol No.5a, Karang Anyar, Kec. Mataram, Kota Mataram, Nusa Tenggara Bar. 83127</p>
                         </div>
                     </div>
 
-                    <div class="flex items-start gap-4">
+                    <div class="flex items-start gap-5">
                         <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl shrink-0">
                             <i class="fa-brands fa-whatsapp"></i>
                         </div>
@@ -55,7 +55,7 @@
                 <!-- Embedded Map -->
                 <div class="w-full h-[300px] rounded-3xl overflow-hidden shadow-md border border-gray-100">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126388.94825965457!2d116.0354432!3d-8.5997232!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dcdb8b54b1f4165%3A0xc3f848bb22d2f788!2sLombok%20Barat%2C%20West%20Nusa%20Tenggara!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" 
+                        src="https://maps.google.com/maps?q=Jl.%20Guru%20Bangkol,%20Karang%20Anyar,%20Mataram&t=&z=16&ie=UTF8&iwloc=&output=embed" 
                         width="100%" 
                         height="100%" 
                         style="border:0;" 

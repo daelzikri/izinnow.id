@@ -102,9 +102,9 @@ if (isset($_GET['edit'])) {
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Konten / Detail Layanan (HTML) *</label>
-                <textarea name="content_html" required rows="8" placeholder="Tuliskan list fitur, syarat, atau bonus di sini..." class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-accent focus:border-accent text-sm font-mono"><?= htmlspecialchars($editData['content_html'] ?? '') ?></textarea>
-                <p class="text-xs text-gray-500 mt-1">Gunakan tag HTML untuk styling yang lebih kompleks seperti list.</p>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Konten / Detail Layanan *</label>
+                <textarea name="content_html" rows="8" placeholder="Tuliskan list fitur, syarat, atau bonus di sini..." class="wysiwyg-editor w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-accent focus:border-accent text-sm font-mono"><?= htmlspecialchars($editData['content_html'] ?? '') ?></textarea>
+                <p class="text-xs text-gray-500 mt-1">Anda dapat mengatur format teks dengan mudah menggunakan editor di atas.</p>
             </div>
 
             <div class="pt-4">

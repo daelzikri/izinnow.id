@@ -1,5 +1,6 @@
 <?php
 require_once '../includes/db.php';
+require_once 'includes/upload_helper.php';
 
 // Handle Delete
 if (isset($_GET['delete'])) {
@@ -16,16 +17,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Auto-generate slug from title
     $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)));
     $content = $_POST['content'];
-    $image_url = $_POST['image_url'];
+    $image_url_input = $_POST['image_url'] ?? '';
+
+    // Process File Upload
+    $uploadedPath = uploadAndConvertToWebp('image_file', '../assets/uploads/blog/');
 
     if (isset($_POST['id']) && !empty($_POST['id'])) {
         // Update
         $id = (int)$_POST['id'];
+        
+        // If there's a new upload, use it, else if there's a URL input use it, else keep old
+        if ($uploadedPath) {
+            $image_url = $uploadedPath;
+        } elseif (!empty($image_url_input)) {
+            $image_url = $image_url_input;
+        } else {
+            $stmt = $pdo->prepare("SELECT image_url FROM blogs WHERE id = ?");
+            $stmt->execute([$id]);
+            $oldData = $stmt->fetch();
+            $image_url = $oldData['image_url'] ?? '';
+        }
+
         $stmt = $pdo->prepare("UPDATE blogs SET title=?, slug=?, content=?, image_url=? WHERE id=?");
         $stmt->execute([$title, $slug, $content, $image_url, $id]);
         header("Location: blog.php?msg=updated");
     } else {
         // Insert
+        $image_url = $uploadedPath ? $uploadedPath : $image_url_input;
         $stmt = $pdo->prepare("INSERT INTO blogs (title, slug, content, image_url) VALUES (?, ?, ?, ?)");
         $stmt->execute([$title, $slug, $content, $image_url]);
         header("Location: blog.php?msg=added");
@@ -71,7 +89,7 @@ if (isset($_GET['edit'])) {
     <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 p-6 self-start sticky top-6">
         <h2 class="text-xl font-bold text-gray-900 mb-6"><?= $editData ? 'Edit Artikel' : 'Tulis Artikel Baru' ?></h2>
         
-        <form action="blog.php" method="POST" class="space-y-4">
+        <form action="blog.php" method="POST" enctype="multipart/form-data" class="space-y-4">
             <?php if ($editData): ?>
                 <input type="hidden" name="id" value="<?= $editData['id'] ?>">
             <?php endif; ?>
@@ -82,13 +100,24 @@ if (isset($_GET['edit'])) {
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">URL Gambar Cover</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Upload Gambar Cover (Opsional)</label>
+                <input type="file" name="image_file" accept=".jpg,.jpeg,.png,.webp" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-accent focus:border-accent">
+                <p class="text-xs text-gray-500 mt-1">Pilih gambar dari perangkat. Otomatis dikonversi ke WebP.</p>
+                <?php if($editData && $editData['image_url']): ?>
+                    <div class="mt-2 text-sm text-gray-500">
+                        Gambar saat ini: <img src="../<?= htmlspecialchars($editData['image_url']) ?>" class="h-10 w-auto rounded inline-block">
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="mt-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Atau Gunakan URL Gambar Cover (Jika tidak upload)</label>
                 <input type="url" name="image_url" placeholder="https://..." value="<?= htmlspecialchars($editData['image_url'] ?? '') ?>" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-accent focus:border-accent">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Konten Artikel *</label>
-                <textarea name="content" required rows="10" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-accent focus:border-accent"><?= htmlspecialchars($editData['content'] ?? '') ?></textarea>
+                <textarea name="content" rows="10" class="wysiwyg-editor w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-accent focus:border-accent"><?= htmlspecialchars($editData['content'] ?? '') ?></textarea>
             </div>
 
             <div class="pt-4">

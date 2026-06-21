@@ -3,8 +3,8 @@
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div class="space-y-2 text-center md:text-left">
                 <strong class="text-xl text-cream font-bold block mb-4">PT RAVEXA KREASI INDONESIA</strong>
-                <p class="text-cream/80 text-sm leading-relaxed">Nata Alam Mavilla 3 Blok N.06 JL. Raya Mapreo, Kuranji Kec. Labuapi</p>
-                <p class="text-cream/80 text-sm leading-relaxed">Lombok Barat, Nusa Tenggara Barat</p>
+                <p class="text-cream/80 text-sm leading-relaxed">Jl. Guru Bangkol No.5a, Karang Anyar, Kec. Mataram,</p>
+                <p class="text-cream/80 text-sm leading-relaxed">Kota Mataram, Nusa Tenggara Bar. 83127</p>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-6 justify-center md:justify-end items-center">
@@ -27,6 +27,11 @@
             </div>
         </div>
     </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/6288973295314" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1ebd5a] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-[0_4px_14px_0_rgba(37,211,102,0.39)] transition-transform hover:scale-110 z-50 animate-[bounce_2s_infinite]">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
 
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

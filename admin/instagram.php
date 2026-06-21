@@ -1,5 +1,6 @@
 <?php
 require_once '../includes/db.php';
+require_once 'includes/upload_helper.php';
 
 // Handle Delete
 if (isset($_GET['delete'])) {
@@ -12,17 +13,33 @@ if (isset($_GET['delete'])) {
 
 // Handle Add/Edit
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $image_url = $_POST['image_url'];
+    $image_url_input = $_POST['image_url'] ?? '';
     $link_url = $_POST['link_url'];
+
+    // Process File Upload
+    $uploadedPath = uploadAndConvertToWebp('image_file', '../assets/uploads/instagram/');
 
     if (isset($_POST['id']) && !empty($_POST['id'])) {
         // Update
         $id = (int)$_POST['id'];
+        
+        if ($uploadedPath) {
+            $image_url = $uploadedPath;
+        } elseif (!empty($image_url_input)) {
+            $image_url = $image_url_input;
+        } else {
+            $stmt = $pdo->prepare("SELECT image_url FROM instagram_posts WHERE id = ?");
+            $stmt->execute([$id]);
+            $oldData = $stmt->fetch();
+            $image_url = $oldData['image_url'] ?? '';
+        }
+
         $stmt = $pdo->prepare("UPDATE instagram_posts SET image_url=?, link_url=? WHERE id=?");
         $stmt->execute([$image_url, $link_url, $id]);
         header("Location: instagram.php?msg=updated");
     } else {
         // Insert
+        $image_url = $uploadedPath ? $uploadedPath : $image_url_input;
         $stmt = $pdo->prepare("INSERT INTO instagram_posts (image_url, link_url) VALUES (?, ?)");
         $stmt->execute([$image_url, $link_url]);
         header("Location: instagram.php?msg=added");
@@ -68,15 +85,25 @@ if (isset($_GET['edit'])) {
     <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 p-6 self-start sticky top-6">
         <h2 class="text-xl font-bold text-gray-900 mb-6"><?= $editData ? 'Edit Postingan' : 'Tambah Postingan Baru' ?></h2>
         
-        <form action="instagram.php" method="POST" class="space-y-4">
+        <form action="instagram.php" method="POST" enctype="multipart/form-data" class="space-y-4">
             <?php if ($editData): ?>
                 <input type="hidden" name="id" value="<?= $editData['id'] ?>">
             <?php endif; ?>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">URL Gambar (Image Link) *</label>
-                <input type="text" name="image_url" required placeholder="https://..." value="<?= htmlspecialchars($editData['image_url'] ?? '') ?>" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-accent focus:border-accent">
-                <p class="text-xs text-gray-500 mt-1">Bisa berupa link URL web atau path lokal (contoh: assets/instagram/1.webp)</p>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Upload Gambar (Opsional)</label>
+                <input type="file" name="image_file" accept=".jpg,.jpeg,.png,.webp" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-accent focus:border-accent">
+                <p class="text-xs text-gray-500 mt-1">Pilih gambar dari perangkat. Otomatis dikonversi ke WebP.</p>
+                <?php if($editData && $editData['image_url']): ?>
+                    <div class="mt-2 text-sm text-gray-500">
+                        Gambar saat ini: <img src="<?= strpos($editData['image_url'], 'http') === 0 ? htmlspecialchars($editData['image_url']) : '../' . htmlspecialchars($editData['image_url']) ?>" class="h-10 w-auto rounded inline-block">
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="mt-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Atau Gunakan URL Gambar (Jika tidak upload)</label>
+                <input type="text" name="image_url" placeholder="https://..." value="<?= htmlspecialchars($editData['image_url'] ?? '') ?>" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-accent focus:border-accent">
             </div>
 
             <div>
